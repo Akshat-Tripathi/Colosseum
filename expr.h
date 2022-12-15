@@ -1,31 +1,30 @@
 #pragma once
+#include <memory>
 #include <vector>
 #include "types.h"
 
-class Expr {
-public:
-    virtual Expr() = 0;
-};
+class Expr {};
 
 class Atom: public Expr {
 public:
-    Atom(string token): name(token) {}
+    Atom(std::string token): name(token) {}
 
 private:
-    string name;
+    std::string name;
 };
 
 class Variable: public Atom {
 public:
-    Variable(string name, Type type, Expr& val): Atom(name), type(type), value(val) {}
+    Variable(std::string name, Type type, Expr& val): Atom(name), type(type), value(val) {}
 
 private:
     Type type;
     Expr& value;
-}
+};
 
 class MultiExpr: public Expr {
-    MultiExpr(std::vector<Expr&> exprs) : exprs(exprs) {}
+    MultiExpr(std::vector<std::unique_ptr<Expr>> exprs) : exprs(std::move(exprs)) {}
+
 private:
-    vector<Expr&> exprs;
+    std::vector<std::unique_ptr<Expr>> exprs;
 };
