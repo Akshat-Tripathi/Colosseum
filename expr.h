@@ -1,25 +1,19 @@
 #pragma once
 #include <memory>
 #include <vector>
-#include "types.h"
+#include <optional>
+#include "idents.h"
 
 class Expr {};
 
-class Atom: public Expr {
+class Variable: public Expr {
 public:
-    Atom(std::string token): name(token) {}
+    Variable(std::string name, Type type, Location location): name(name), type(type), location(location) {}
 
 private:
     std::string name;
-};
-
-class Variable: public Atom {
-public:
-    Variable(std::string name, Type type, Expr& val): Atom(name), type(type), value(val) {}
-
-private:
+    Location location;
     Type type;
-    Expr& value;
 };
 
 class MultiExpr: public Expr {
@@ -27,4 +21,47 @@ class MultiExpr: public Expr {
 
 private:
     std::vector<std::unique_ptr<Expr>> exprs;
+};
+
+class ConstExpr: public Expr {
+public:
+    ConstExpr(std::string token): token(token) {}
+
+private:
+    std::string token;
+};
+
+class Noop: public Expr {};
+
+class SetExpr: public Expr {
+public:
+    SetExpr(Variable& lval, Expr& rval) : lval(lval), rval(rval) {}
+
+private:
+    Variable& lval;
+    Expr& rval;
+};
+
+class ReturnExpr: public Expr {
+public:
+    ReturnExpr(Expr& rval) : rval(rval) {}
+
+private:
+    Expr& rval;
+};
+
+class FunctionExpr: public Expr {
+public:
+    FunctionExpr(Type return_type,
+                 std::string name,
+                 std::vector<std::unique_ptr<Variable>> args,
+                 std::optional<std::string> arena) :
+                 return_type(return_type), name(name),
+                 args(args), arena(arena) {}
+
+private:
+    Type return_type;
+    std::string name;
+    std::vector<std::unique_ptr<Variable>> args;
+    std::optional<std::string> arena;
 };
