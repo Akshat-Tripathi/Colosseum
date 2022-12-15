@@ -1,0 +1,4 @@
+(defun int main () () (
+    (set x int 5)
+    (return x)
+))
