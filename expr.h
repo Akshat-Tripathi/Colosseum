@@ -57,7 +57,7 @@ public:
                  std::vector<std::unique_ptr<Variable>> args,
                  std::optional<std::string> arena) :
                  return_type(return_type), name(name),
-                 args(args), arena(arena) {}
+                 args(std::move(args)), arena(arena) {}
 
 private:
     Type return_type;
