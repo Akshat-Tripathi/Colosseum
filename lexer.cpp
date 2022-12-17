@@ -1,5 +1,6 @@
 #include "lexer.h"
-#include <iostream>
+#include <type_traits>
+#include <sstream>
 
 const std::string delims = " \n\t\v\f\r)";
 
@@ -65,4 +66,34 @@ std::unique_ptr<List> lex(std::istream& stream) {
     stream.get();
     
     return std::make_unique<List>(std::move(vec));
+}
+
+template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
+// explicit deduction guide (not needed as of C++20)
+template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
+
+std::string List::to_string() {
+    if (items.size() == 0) {
+        return "()";
+    }
+    std::stringstream stream;
+    char hack = '(';
+    for (auto& item : items) {
+        stream << hack;
+        std::visit(overloaded {
+            [&stream](std::unique_ptr<Atom>& atom) {stream << atom->to_string();},
+            [&stream](std::unique_ptr<List>& list) {stream << list->to_string();}
+        }, item);
+        hack = ' ';
+    }
+    stream << ')';
+    return stream.str();
+}
+
+void print(std::unique_ptr<Atom>& atom) {
+    std::cout << atom->to_string() << std::endl;
+}
+
+void print(std::unique_ptr<List>& list) {
+    std::cout << list->to_string() << std::endl;
 }

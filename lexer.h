@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <istream>
 #include <vector>
 #include <memory>
@@ -18,6 +19,10 @@ public:
         return token.length() == 0;
     }
 
+    std::string to_string() {
+        return token;
+    }
+
 private:
     std::string token;
 };
@@ -26,9 +31,15 @@ class List {
 public:
     List(std::vector<EitherAtomOrList> items) : items(std::move(items)) {}
 
+    std::string to_string();
+
 private:
     std::vector<EitherAtomOrList> items;
 };
 
 // Can throw (really bad) exceptions
 std::unique_ptr<List> lex(std::istream&);
+
+void print(std::unique_ptr<Atom>& atom);
+
+void print(std::unique_ptr<List>& list);
