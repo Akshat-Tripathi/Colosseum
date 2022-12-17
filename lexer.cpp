@@ -3,23 +3,30 @@
 
 const std::string delims = " \n\t\v\f\r)";
 
+std::unique_ptr<Atom> lex_quoted(std::istream& stream) {
+    char quote_char = stream.get();
+    std::string str;
+    std::getline(stream, str, quote_char);
+
+    if (stream.eof()) {
+        throw std::runtime_error("Missing quote");
+    }
+
+    // Add the quotes
+    str.insert(str.begin(), quote_char);
+    str.push_back(quote_char);
+
+    return std::make_unique<Atom>(str);
+}
+
 std::unique_ptr<Atom> lex_atom(std::istream& stream) {
     char first = stream.peek();
     bool is_escaped = (first == '\"' || first == '\'');
     
-    std::string str;
     if (is_escaped) {
-        stream.get();
-        std::getline(stream, str, first);
-
-        //Check if the string is closed
-        if (stream.eof()) {
-            throw std::runtime_error("Open string still exists");
-        }
-
-        str.insert(str.begin(), first);
-        str.push_back(first);
+        return lex_quoted(stream);
     } else {
+        std::string str;
         while (true) {
             char c = stream.get();
 
@@ -31,8 +38,8 @@ std::unique_ptr<Atom> lex_atom(std::istream& stream) {
             }
             str.push_back(c);
         }
+        return std::make_unique<Atom>(str);
     }
-    return std::make_unique<Atom>(str);
 }
 
 std::unique_ptr<List> lex(std::istream& stream) {
