@@ -1,10 +1,13 @@
 CC = g++
-CC_FLAGS = -g
+CC_FLAGS = -g -std=c++17
 
 all: main
 
-main:
-	${CC} ${CC_FLAGS} main.cpp -o colosseum
+bin/lexer.o: lexer.cpp
+	${CC} ${CC_FLAGS} -c lexer.cpp -o bin/lexer.o
+
+main: bin/lexer.o
+	${CC} ${CC_FLAGS} main.cpp bin/lexer.o -o colosseum
 
 .PHONY: clean
 
