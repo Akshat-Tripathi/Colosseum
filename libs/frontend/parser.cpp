@@ -3,10 +3,14 @@
 #include "idents.h"
 
 Type parse_type(const Atom& atom);
-std::unique_ptr<FunctionDef> parse_function(const List& list);
+std::unique_ptr<Stmt> parse_statement(const List& list);
+std::unique_ptr<Expr> parse_expression(const EitherAtomOrList& either);
+
 std::unique_ptr<Variable> parse_variable(const List& list);
 std::unique_ptr<MultiStmt> parse_multistmt(const List& list);
+std::unique_ptr<ConstExpr> parse_constexpr(const Atom& atom);
 std::unique_ptr<ReturnStmt> parse_returnstmt(const List& list);
+std::unique_ptr<FunctionDef> parse_function(const List& list);
 
 
 void fail_parse(std::string message, const List& list) {
@@ -19,6 +23,31 @@ void fail_parse(std::string message, const Atom& atom) {
 
 std::unique_ptr<MultiStmt> parse(const List& list) {
     return parse_multistmt(list);
+}
+
+std::unique_ptr<Stmt> parse_statement(const List& list) {
+    auto& items = list.get_items();
+    auto& first = std::get<std::unique_ptr<Atom>>(items[0]); //TODO - better error handling for noops
+    std::string token = first->to_string();
+
+    if (token == "return") {
+        return parse_returnstmt(list);
+    } else if (token == "defun") {
+        return parse_function(list);
+    }
+
+    fail_parse("Invalid statement", *first);
+    return std::unique_ptr<Stmt>(nullptr);
+}
+
+std::unique_ptr<Expr> parse_expression(const EitherAtomOrList& either) {
+    //TODO fill out the non constexpr case
+    auto& atom = std::get<std::unique_ptr<Atom>>(either);
+    return parse_constexpr(*atom);
+}
+
+std::unique_ptr<ConstExpr> parse_constexpr(const Atom& atom) {
+    return std::make_unique<ConstExpr>(atom.to_string());
 }
 
 Type parse_type(const Atom& atom) {
@@ -35,7 +64,8 @@ std::unique_ptr<Variable> parse_variable(const List& list) {
 }
 
 std::unique_ptr<ReturnStmt> parse_returnstmt(const List& list) {
-    auto expr = std::make_unique<Expr>();
+    auto& items = list.get_items();
+    auto expr = parse_expression(items[1]);
     return std::make_unique<ReturnStmt>(expr); //Surely this doesn't work
 }
 
@@ -46,18 +76,7 @@ std::unique_ptr<MultiStmt> parse_multistmt(const List& list) {
     std::transform(items.begin(), items.end(), stmts.begin(),
     [](const EitherAtomOrList& either) -> std::unique_ptr<Stmt> {
         auto& list = std::get<std::unique_ptr<List>>(either);
-        auto& items = list->get_items();
-        auto& first = std::get<std::unique_ptr<Atom>>(items[0]); //TODO - better error handling for noops
-        std::string token = first->to_string();
-
-        if (token == "return") {
-            return parse_returnstmt(*list);
-        } else if (token == "defun") {
-            return parse_function(*list);
-        }
-
-        fail_parse("Invalid statement", *first);
-        return std::make_unique<Stmt>();
+        return parse_statement(*list);
     });
 
     return std::make_unique<MultiStmt>(stmts);
