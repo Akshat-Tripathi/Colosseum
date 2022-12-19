@@ -52,8 +52,7 @@ std::unique_ptr<MultiStmt> parse_multistmt(const List& list) {
 
         if (token == "return") {
             return parse_returnstmt(*list);
-        }
-        if (token == "defun") {
+        } else if (token == "defun") {
             return parse_function(*list);
         }
 

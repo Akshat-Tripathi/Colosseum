@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include "lexer.h"
-#include "parser.h"
+#include "libs/frontend/lexer.h"
+#include "libs/frontend/parser.h"
 
 int main(int argc, char** argv) {
     if (argc != 2) {

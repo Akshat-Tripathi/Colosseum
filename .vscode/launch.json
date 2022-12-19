@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/colosseum",
-            "args": [],
+            "args": ["test/good/code/return_0.col"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

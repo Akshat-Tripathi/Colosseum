@@ -1,4 +1,4 @@
 (defun int main () () (
-    (set x int stack 5)
+    (set x int 5)
     (return x)
 ))
