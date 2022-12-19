@@ -4,7 +4,7 @@
 
 const std::string delims = " \n\t\v\f\r)";
 
-std::string _to_string(EitherAtomOrList& either);
+std::string _to_string(const EitherAtomOrList& either);
 
 std::unique_ptr<Atom> lex_quoted(std::istream& stream) {
     char quote_char = stream.get();
@@ -96,9 +96,9 @@ template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
 // explicit deduction guide (not needed as of C++20)
 template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
-std::string _to_string(EitherAtomOrList& either) {
+std::string _to_string(const EitherAtomOrList& either) {
     return std::visit(overloaded {
-        [](std::unique_ptr<Atom>& atom) {return atom->to_string();},
-        [](std::unique_ptr<List>& list) {return list->to_string();}
+        [](const std::unique_ptr<Atom>& atom) {return atom->to_string();},
+        [](const std::unique_ptr<List>& list) {return list->to_string();}
     }, either);
 }
