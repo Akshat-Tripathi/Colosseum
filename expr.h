@@ -7,7 +7,6 @@
 class Expr {}; //Expressions return something
 class Stmt {}; //Statements don't
 
-
 class Variable: public Stmt {
 public:
     Variable(std::string name, Type type, Location location): name(name), type(type), location(location) {}
@@ -36,19 +35,19 @@ private:
 
 class SetStmt: public Stmt {
 public:
-    SetStmt(Variable& lval, Expr& rval) : lval(lval), rval(rval) {}
+    SetStmt(std::unique_ptr<Variable>& lval, std::unique_ptr<Expr>& rval) : lval(std::move(lval)), rval(std::move(rval)) {}
 
 private:
-    Variable& lval;
-    Expr& rval;
+    std::unique_ptr<Variable> lval;
+    std::unique_ptr<Expr> rval;
 };
 
 class ReturnStmt: public Stmt {
 public:
-    ReturnStmt(Expr& rval) : rval(rval) {}
+    ReturnStmt(std::unique_ptr<Expr>& rval) : rval(std::move(rval)) {}
 
 private:
-    Expr& rval;
+    std::unique_ptr<Expr> rval;
 };
 
 class FunctionDef: public Stmt {

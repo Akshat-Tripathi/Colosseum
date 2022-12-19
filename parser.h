@@ -4,4 +4,4 @@
 #include "expr.h"
 #include "lexer.h"
 
-std::vector<std::unique_ptr<Stmt>> parse(List& list);
+std::unique_ptr<MultiStmt> parse(const List& list);

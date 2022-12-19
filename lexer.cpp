@@ -101,11 +101,11 @@ std::string List::to_string() const {
     return stream.str();
 }
 
-void print(std::unique_ptr<Atom>& atom) {
+void print(const std::unique_ptr<Atom>& atom) {
     std::cout << atom->to_string() << std::endl;
 }
 
-void print(std::unique_ptr<List>& list) {
+void print(const std::unique_ptr<List>& list) {
     std::cout << list->to_string() << std::endl;
 }
 

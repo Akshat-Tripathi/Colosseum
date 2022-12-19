@@ -10,16 +10,15 @@ std::unique_ptr<ReturnStmt> parse_returnstmt(const List& list);
 
 
 void fail_parse(std::string message, const List& list) {
-    throw std::runtime_error(message + " " + list.to_string());
+    throw std::runtime_error(message + ": " + list.to_string());
 }
 
 void fail_parse(std::string message, const Atom& atom) {
-    throw std::runtime_error(message + " " + atom.to_string());
+    throw std::runtime_error(message + ": " + atom.to_string());
 }
 
-std::vector<std::unique_ptr<Stmt>> parse(const List& list) {
-    std::vector<std::unique_ptr<Stmt>> vec;
-    return vec;
+std::unique_ptr<MultiStmt> parse(const List& list) {
+    return parse_multistmt(list);
 }
 
 Type parse_type(const Atom& atom) {
@@ -37,22 +36,28 @@ std::unique_ptr<Variable> parse_variable(const List& list) {
 
 std::unique_ptr<ReturnStmt> parse_returnstmt(const List& list) {
     auto expr = std::make_unique<Expr>();
-    return std::make_unique<ReturnStmt>(*expr); //Surely this doesn't work
+    return std::make_unique<ReturnStmt>(expr); //Surely this doesn't work
 }
 
 std::unique_ptr<MultiStmt> parse_multistmt(const List& list) {
     auto& items = list.get_items();
-    std::vector<std::unique_ptr<Stmt>> stmts;
+    std::vector<std::unique_ptr<Stmt>> stmts(items.size());
 
     std::transform(items.begin(), items.end(), stmts.begin(),
     [](const EitherAtomOrList& either) -> std::unique_ptr<Stmt> {
         auto& list = std::get<std::unique_ptr<List>>(either);
         auto& items = list->get_items();
-        std::string first = std::get<std::unique_ptr<Atom>>(items[0])->to_string(); //TODO - better error handling for noops
+        auto& first = std::get<std::unique_ptr<Atom>>(items[0]); //TODO - better error handling for noops
+        std::string token = first->to_string();
 
-        if (first == "return") {
+        if (token == "return") {
             return parse_returnstmt(*list);
         }
+        if (token == "defun") {
+            return parse_function(*list);
+        }
+
+        fail_parse("Invalid statement", *first);
         return std::make_unique<Stmt>();
     });
 

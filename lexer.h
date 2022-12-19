@@ -45,5 +45,5 @@ private:
 // Can throw (really bad) exceptions
 std::unique_ptr<List> lex(std::istream&);
 
-void print(std::unique_ptr<Atom>& atom);
-void print(std::unique_ptr<List>& list);
+void print(const std::unique_ptr<Atom>& atom);
+void print(const std::unique_ptr<List>& list);
