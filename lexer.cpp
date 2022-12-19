@@ -4,6 +4,8 @@
 
 const std::string delims = " \n\t\v\f\r)";
 
+std::string _to_string(EitherAtomOrList& either);
+
 std::unique_ptr<Atom> lex_quoted(std::istream& stream) {
     char quote_char = stream.get();
     std::string str;
@@ -68,10 +70,6 @@ std::unique_ptr<List> lex(std::istream& stream) {
     return std::make_unique<List>(std::move(vec));
 }
 
-template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
-// explicit deduction guide (not needed as of C++20)
-template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
-
 std::string List::to_string() {
     if (items.size() == 0) {
         return "()";
@@ -79,11 +77,7 @@ std::string List::to_string() {
     std::stringstream stream;
     char hack = '(';
     for (auto& item : items) {
-        stream << hack;
-        std::visit(overloaded {
-            [&stream](std::unique_ptr<Atom>& atom) {stream << atom->to_string();},
-            [&stream](std::unique_ptr<List>& list) {stream << list->to_string();}
-        }, item);
+        stream << hack << _to_string(item);
         hack = ' ';
     }
     stream << ')';
@@ -96,4 +90,15 @@ void print(std::unique_ptr<Atom>& atom) {
 
 void print(std::unique_ptr<List>& list) {
     std::cout << list->to_string() << std::endl;
+}
+
+template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
+// explicit deduction guide (not needed as of C++20)
+template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
+
+std::string _to_string(EitherAtomOrList& either) {
+    return std::visit(overloaded {
+        [](std::unique_ptr<Atom>& atom) {return atom->to_string();},
+        [](std::unique_ptr<List>& list) {return list->to_string();}
+    }, either);
 }

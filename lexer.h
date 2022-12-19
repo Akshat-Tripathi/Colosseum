@@ -5,6 +5,7 @@
 #include <memory>
 #include <variant>
 #include <stdexcept>
+#include <functional>
 
 class Atom;
 class List;
@@ -41,5 +42,4 @@ private:
 std::unique_ptr<List> lex(std::istream&);
 
 void print(std::unique_ptr<Atom>& atom);
-
 void print(std::unique_ptr<List>& list);
