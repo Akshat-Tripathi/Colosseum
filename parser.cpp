@@ -1,0 +1,84 @@
+#include <stdexcept>
+#include "parser.h"
+#include "idents.h"
+
+Type parse_type(const Atom& atom);
+std::unique_ptr<FunctionDef> parse_function(const List& list);
+std::unique_ptr<Variable> parse_variable(const List& list);
+std::unique_ptr<MultiStmt> parse_multistmt(const List& list);
+std::unique_ptr<ReturnStmt> parse_returnstmt(const List& list);
+
+
+void fail_parse(std::string message, const List& list) {
+    throw std::runtime_error(message + " " + list.to_string());
+}
+
+void fail_parse(std::string message, const Atom& atom) {
+    throw std::runtime_error(message + " " + atom.to_string());
+}
+
+std::vector<std::unique_ptr<Stmt>> parse(const List& list) {
+    std::vector<std::unique_ptr<Stmt>> vec;
+    return vec;
+}
+
+Type parse_type(const Atom& atom) {
+    if (atom.to_string() == "int") {
+        return Type::INT;
+    }
+    fail_parse("Unknown type", atom);
+    return Type::INT; // Get the compiler to shut up
+}
+
+//TODO: do
+std::unique_ptr<Variable> parse_variable(const List& list) {
+    return std::make_unique<Variable>("todo", Type::INT, Location::STACK);
+}
+
+std::unique_ptr<ReturnStmt> parse_returnstmt(const List& list) {
+    auto expr = std::make_unique<Expr>();
+    return std::make_unique<ReturnStmt>(*expr); //Surely this doesn't work
+}
+
+std::unique_ptr<MultiStmt> parse_multistmt(const List& list) {
+    auto& items = list.get_items();
+    std::vector<std::unique_ptr<Stmt>> stmts;
+
+    std::transform(items.begin(), items.end(), stmts.begin(),
+    [](const EitherAtomOrList& either) -> std::unique_ptr<Stmt> {
+        auto& list = std::get<std::unique_ptr<List>>(either);
+        auto& items = list->get_items();
+        std::string first = std::get<std::unique_ptr<Atom>>(items[0])->to_string(); //TODO - better error handling for noops
+
+        if (first == "return") {
+            return parse_returnstmt(*list);
+        }
+        return std::make_unique<Stmt>();
+    });
+
+    return std::make_unique<MultiStmt>(stmts);
+}
+
+std::unique_ptr<FunctionDef> parse_function(const List& list) {
+    auto& items = list.get_items();
+
+    if (items.size() != 6) {
+        fail_parse("Incorrect function length", list);
+    }
+
+    Type return_type = parse_type(*std::get<std::unique_ptr<Atom>>(items[1]));
+    std::string name = std::get<std::unique_ptr<Atom>>(items[2])->to_string();
+
+    std::vector<std::unique_ptr<Variable>> args;
+    auto& args_iter = std::get<std::unique_ptr<List>>(items[3])->get_items();
+    std::transform(args_iter.begin(), args_iter.end(), args.begin(),
+                   [](const EitherAtomOrList& either) {
+                        return parse_variable(*std::get<std::unique_ptr<List>>(either));
+                   });
+    // TODO add memory location
+    std::optional<std::string> arena = {};
+    std::unique_ptr<MultiStmt> body = parse_multistmt(*std::get<std::unique_ptr<List>>(items[5]));
+    
+    return std::make_unique<FunctionDef>(return_type, name, args, arena, body);
+}
+
