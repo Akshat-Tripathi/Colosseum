@@ -4,9 +4,11 @@
 #include <optional>
 #include "idents.h"
 
-class Expr {};
+class Stmt {}; //Expressions return something
+class Stmt {}; //Statements don't
 
-class Variable: public Expr {
+
+class Variable: public Stmt {
 public:
     Variable(std::string name, Type type, Location location): name(name), type(type), location(location) {}
 
@@ -16,14 +18,14 @@ private:
     Type type;
 };
 
-class MultiExpr: public Expr {
-    MultiExpr(std::vector<std::unique_ptr<Expr>> exprs) : exprs(std::move(exprs)) {}
+class MultiStmt: public Stmt {
+    MultiStmt(std::vector<std::unique_ptr<Stmt>> exprs) : exprs(std::move(exprs)) {}
 
 private:
-    std::vector<std::unique_ptr<Expr>> exprs;
+    std::vector<std::unique_ptr<Stmt>> exprs;
 };
 
-class ConstExpr: public Expr {
+class ConstExpr: public Stmt {
 public:
     ConstExpr(std::string token): token(token) {}
 
@@ -31,37 +33,37 @@ private:
     std::string token;
 };
 
-class Noop: public Expr {};
-
-class SetExpr: public Expr {
+class SetStmt: public Stmt {
 public:
-    SetExpr(Variable& lval, Expr& rval) : lval(lval), rval(rval) {}
+    SetStmt(Variable& lval, Stmt& rval) : lval(lval), rval(rval) {}
 
 private:
     Variable& lval;
-    Expr& rval;
+    Stmt& rval;
 };
 
-class ReturnExpr: public Expr {
+class ReturnStmt: public Stmt {
 public:
-    ReturnExpr(Expr& rval) : rval(rval) {}
+    ReturnStmt(Stmt& rval) : rval(rval) {}
 
 private:
-    Expr& rval;
+    Stmt& rval;
 };
 
-class FunctionExpr: public Expr {
+class FunctionDef: public Stmt {
 public:
-    FunctionExpr(Type return_type,
+    FunctionDef(Type return_type,
                  std::string name,
                  std::vector<std::unique_ptr<Variable>> args,
-                 std::optional<std::string> arena) :
+                 std::optional<std::string> arena,
+                 std::unique_ptr<MultiStmt> body) :
                  return_type(return_type), name(name),
-                 args(std::move(args)), arena(arena) {}
+                 args(std::move(args)), arena(arena), body(std::move(body)) {}
 
 private:
     Type return_type;
     std::string name;
     std::vector<std::unique_ptr<Variable>> args;
     std::optional<std::string> arena;
+    std::unique_ptr<MultiStmt> body;
 };
