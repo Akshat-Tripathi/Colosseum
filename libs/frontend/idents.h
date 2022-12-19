@@ -1,9 +1,8 @@
 #pragma once
+#include <optional>
 
 enum class Type {
     INT
 };
 
-enum class Location {
-    STACK
-};
+using Location = std::optional<std::string>;

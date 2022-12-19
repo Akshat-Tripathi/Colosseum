@@ -1,4 +1,4 @@
-(defun int main () () (
+(defun int main () arena (
     (set x int 5)
     (return x)
 ))
