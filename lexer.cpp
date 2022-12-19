@@ -6,6 +6,23 @@ const std::string delims = " \n\t\v\f\r)";
 
 std::string _to_string(const EitherAtomOrList& either);
 
+std::unique_ptr<List> lex_list(std::istream& stream);
+std::unique_ptr<Atom> lex_quoted(std::istream& stream);
+std::unique_ptr<Atom> lex_atom(std::istream& stream);
+
+// Like lex_list but for the top level since we have implicit surrounding parens
+std::unique_ptr<List> lex(std::istream& stream) {
+    std::vector<EitherAtomOrList> all;
+    while (!stream.eof()) {
+        EitherAtomOrList lexed(lex_list(stream));
+        all.push_back(std::move(lexed));
+        while (!stream.eof() && stream.peek() != '(') {
+            stream.get();
+        }
+    }
+    return std::make_unique<List>(std::move(all));
+}
+
 std::unique_ptr<Atom> lex_quoted(std::istream& stream) {
     char quote_char = stream.get();
     std::string str;
@@ -45,7 +62,7 @@ std::unique_ptr<Atom> lex_atom(std::istream& stream) {
     }
 }
 
-std::unique_ptr<List> lex(std::istream& stream) {
+std::unique_ptr<List> lex_list(std::istream& stream) {
     if (stream.get() != '(') {
         throw std::runtime_error("Malformed s-expression");
     }
@@ -60,7 +77,7 @@ std::unique_ptr<List> lex(std::istream& stream) {
                 vec.emplace_back(std::move(atom));
             }
         } else {
-            auto list = lex(stream);
+            auto list = lex_list(stream);
             vec.emplace_back(std::move(list));
         }
         c = stream.peek();
@@ -77,7 +94,6 @@ std::string List::to_string() const {
     std::stringstream stream;
     char hack = '(';
     for (auto& item : items) {
-        stream << hack << _to_string(item);
         stream << hack << _to_string(item);
         hack = ' ';
     }
