@@ -78,6 +78,7 @@ std::string List::to_string() const {
     char hack = '(';
     for (auto& item : items) {
         stream << hack << _to_string(item);
+        stream << hack << _to_string(item);
         hack = ' ';
     }
     stream << ')';
