@@ -5,6 +5,7 @@
 #include <memory>
 #include <variant>
 #include <stdexcept>
+#include <functional>
 
 class Atom;
 class List;
@@ -15,11 +16,11 @@ class Atom {
 public:
     Atom(std::string token) : token(token) {}
 
-    bool is_empty() {
+    bool is_empty() const {
         return token.length() == 0;
     }
 
-    std::string to_string() {
+    std::string to_string() const {
         return token;
     }
 
@@ -31,7 +32,11 @@ class List {
 public:
     List(std::vector<EitherAtomOrList> items) : items(std::move(items)) {}
 
-    std::string to_string();
+    std::string to_string() const;
+
+    const std::vector<EitherAtomOrList>& get_items() const {
+        return items;
+    }
 
 private:
     std::vector<EitherAtomOrList> items;
@@ -41,5 +46,4 @@ private:
 std::unique_ptr<List> lex(std::istream&);
 
 void print(std::unique_ptr<Atom>& atom);
-
 void print(std::unique_ptr<List>& list);

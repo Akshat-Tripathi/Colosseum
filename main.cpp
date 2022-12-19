@@ -1,6 +1,8 @@
 #include <iostream>
+#include "lexer.h"
 
 int main() {
-    std::cout << "Hello world" << std::endl;
+    auto lexed = lex(std::cin);
+    print(lexed);
     return 0;
 }
