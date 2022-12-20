@@ -5,80 +5,67 @@
 #include "idents.h"
 #include "visitor.h"
 
-class Expr {
-public:
+struct Expr {
     virtual void accept(Visitor& visitor) = 0;
 }; //Expressions return something
-class Stmt {
-public:
+struct Stmt {
     virtual void accept(Visitor& visitor) = 0;
 }; //Statements don't
 
-class Variable: public Stmt {
-public:
+struct Variable: public Stmt {
     Variable(std::string name, Type type, Location location): name(name), type(type), location(location) {}
 
     void accept(Visitor& visitor) override {
         visitor.visit(this);
     }
 
-private:
     std::string name;
     Location location;
     Type type;
 };
 
-class MultiStmt: public Stmt {
-public:
+struct MultiStmt: public Stmt {
     MultiStmt(std::vector<std::unique_ptr<Stmt>>& stmts) : stmts(std::move(stmts)) {}
 
     void accept(Visitor& visitor) override {
         visitor.visit(this);
     }
 
-private:
     std::vector<std::unique_ptr<Stmt>> stmts;
 };
 
-class ConstExpr: public Expr {
-public:
+struct ConstExpr: public Expr {
     ConstExpr(std::string token): token(token) {}
 
     void accept(Visitor& visitor) override {
         visitor.visit(this);
     }
 
-private:
     std::string token;
 };
 
-class SetStmt: public Stmt {
-public:
+struct SetStmt: public Stmt {
     SetStmt(std::unique_ptr<Variable>& lval, std::unique_ptr<Expr>& rval) : lval(std::move(lval)), rval(std::move(rval)) {}
 
     void accept(Visitor& visitor) override {
         visitor.visit(this);
     }
 
-private:
     std::unique_ptr<Variable> lval;
     std::unique_ptr<Expr> rval;
 };
 
-class ReturnStmt: public Stmt {
-public:
+struct ReturnStmt: public Stmt {
     ReturnStmt(std::unique_ptr<Expr>& rval) : rval(std::move(rval)) {}
 
     void accept(Visitor& visitor) override {
         visitor.visit(this);
     }
 
-private:
     std::unique_ptr<Expr> rval;
 };
 
-class FunctionDef: public Stmt {
-public:
+struct FunctionDef: public Stmt {
     FunctionDef(Type return_type,
                  std::string name,
                  std::vector<std::unique_ptr<Variable>>& args,
@@ -91,7 +78,6 @@ public:
         visitor.visit(this);
     }
 
-private:
     Type return_type;
     std::string name;
     std::vector<std::unique_ptr<Variable>> args;
