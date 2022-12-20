@@ -9,7 +9,7 @@ bin/parser.o: libs/frontend/parser.h libs/frontend/parser.cpp bin/lexer.o
 bin/lexer.o: libs/frontend/lexer.h libs/frontend/lexer.cpp
 	${CC} ${CC_FLAGS} -c libs/frontend/lexer.cpp -o bin/lexer.o
 
-bin/printer.o: libs/frontend/visitor.h libs/frontend/ast_printer.cpp
+bin/printer.o: libs/frontend/printer.h libs/frontend/ast_printer.cpp
 	${CC} ${CC_FLAGS} -c libs/frontend/ast_printer.cpp -o bin/printer.o
 
 main: bin/lexer.o bin/parser.o bin/printer.o

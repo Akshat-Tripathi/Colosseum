@@ -2,7 +2,7 @@
 #include <fstream>
 #include "libs/frontend/lexer.h"
 #include "libs/frontend/parser.h"
-#include "libs/frontend/visitor.h"
+#include "libs/frontend/printer.h"
 
 int main(int argc, char** argv) {
     if (argc != 2) {
