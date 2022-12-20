@@ -14,11 +14,11 @@ int main(int argc, char** argv) {
     file.open(argv[1]);
 
     const auto lexed = lex(file);
-    print(lexed);
+    // print(lexed);
 
     auto parsed = parse(*lexed);
 
-    ASTPrinter printer;
+    ASTPrinter printer(std::cout);
     printer.visit(parsed.get());
 
     file.close();
