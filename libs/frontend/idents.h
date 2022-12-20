@@ -2,6 +2,7 @@
 #include <vector>
 #include <optional>
 #include <initializer_list>
+#include <sstream>
 
 // Might not actually be a HKT idk
 enum class Kind {
@@ -25,6 +26,30 @@ public:
 
     inline bool operator!=(const Type& rhs) { return !(*this == rhs); }
 
+    std::string to_string() const {
+        std::stringstream stream;
+
+        switch (kind) {
+        case Kind::BASE:
+            if (subtypes.size() == 1) {
+                return base_type_to_string(subtypes[0]);
+            }
+            //TODO implement for multitype case (aka tuples)
+        case Kind::FUNCTION:
+            std::stringstream stream;
+            stream << base_type_to_string(subtypes[0]) << " func";
+            char hack = '(';
+            for (auto type : subtypes) {
+                stream << hack << base_type_to_string(type);
+                hack = ' ';
+            }
+            stream << ')';
+            return stream.str();
+        }
+
+        return "ERROR";
+    }
+
     // Helper functions
     static Type Int() {
         return Type(Kind::BASE, {BaseType::INT});
@@ -33,6 +58,15 @@ public:
 private:
     Kind kind;
     std::vector<BaseType> subtypes; // TODO: make this work for function pointers etc?
+
+    std::string base_type_to_string(BaseType type) const {
+        switch (type) {
+        case BaseType::INT:
+            return "int";
+        }
+
+        return "ERROR";
+    }
 };
 
 using Location = std::optional<std::string>;

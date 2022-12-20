@@ -26,7 +26,7 @@ void ASTPrinter::visit(const ReturnStmt* node) {
 
 //TODO do this one properly
 void ASTPrinter::visit(const FunctionDef* node) {
-    std::cout << "(FunctionDef " << "node->return_type" << ' ' << node->name << std::endl;
+    std::cout << "(FunctionDef " << node->return_type.to_string() << ' ' << node->name << std::endl;
     indents++;
     print_indents();
     node->body->accept(*this);
