@@ -2,6 +2,7 @@
 #include <fstream>
 #include "libs/frontend/lexer.h"
 #include "libs/frontend/parser.h"
+#include "libs/frontend/visitor.h"
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -16,6 +17,9 @@ int main(int argc, char** argv) {
     print(lexed);
 
     auto parsed = parse(*lexed);
+
+    ASTPrinter printer;
+    printer.visit(parsed.get());
 
     file.close();
     return 0;
