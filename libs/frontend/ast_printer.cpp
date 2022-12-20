@@ -13,6 +13,7 @@ void ASTPrinter::visit(const MultiStmt* node) {
         stmt->accept(*this);
     }
     indents--;
+    std::cout << std::endl;
     print_indents();
     std::cout << ")" << std::endl;
 }
@@ -20,7 +21,7 @@ void ASTPrinter::visit(const MultiStmt* node) {
 void ASTPrinter::visit(const ReturnStmt* node) {
     std::cout << "(ReturnStmt ";
     node->rval->accept(*this);
-    std::cout << ')' << std::endl;
+    std::cout << ')';
 }
 
 //TODO do this one properly
