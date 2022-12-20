@@ -52,10 +52,10 @@ std::unique_ptr<ConstExpr> parse_constexpr(const Atom& atom) {
 
 Type parse_type(const Atom& atom) {
     if (atom.to_string() == "int") {
-        return Type::INT;
+        return Type::Int();
     }
     fail_parse("Unknown type", atom);
-    return Type::INT; // Get the compiler to shut up
+    return Type::Int(); // Get the compiler to shut up
 }
 
 Location parse_location(const Atom& atom) {
@@ -64,7 +64,7 @@ Location parse_location(const Atom& atom) {
 
 //TODO: do
 std::unique_ptr<Variable> parse_variable(const List& list) {
-    return std::make_unique<Variable>("todo", Type::INT, std::nullopt);
+    return std::make_unique<Variable>("todo", Type::Int(), std::nullopt);
 }
 
 std::unique_ptr<ReturnStmt> parse_returnstmt(const List& list) {
