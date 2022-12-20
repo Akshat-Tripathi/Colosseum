@@ -3,6 +3,7 @@
 #include "libs/frontend/lexer.h"
 #include "libs/frontend/parser.h"
 #include "libs/frontend/printer.h"
+#include "libs/frontend/sem_check.h"
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -19,7 +20,11 @@ int main(int argc, char** argv) {
     auto parsed = parse(*lexed);
 
     ASTPrinter printer(std::cout);
-    printer.visit(parsed.get());
+    printer.print(parsed.get());
+
+    SemCheck checker;
+
+    checker.check(parsed.get());
 
     file.close();
     return 0;
