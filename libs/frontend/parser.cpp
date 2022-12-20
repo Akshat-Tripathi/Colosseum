@@ -64,7 +64,7 @@ Location parse_location(const Atom& atom) {
 
 //TODO: do
 std::unique_ptr<Variable> parse_variable(const List& list) {
-    return std::make_unique<Variable>("todo", Type::Int(), std::nullopt);
+    return std::make_unique<Variable>("todo", Type::Int(), Location());
 }
 
 std::unique_ptr<ReturnStmt> parse_returnstmt(const List& list) {
@@ -105,7 +105,7 @@ std::unique_ptr<FunctionDef> parse_function(const List& list) {
                         return parse_variable(*std::get<std::unique_ptr<List>>(either));
                    });
     
-    Location arena = std::nullopt;
+    Location arena;
     std::unique_ptr<MultiStmt> body;
 
     if (arena_present) {

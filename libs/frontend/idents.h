@@ -15,8 +15,7 @@ enum class BaseType {
     INT
 };
 
-class Type {
-public:
+struct Type {
     Type(Kind kind, std::vector<BaseType> subtypes) : kind(kind), subtypes(std::move(subtypes)) {}
     Type(Kind kind, std::initializer_list<BaseType> subtypes) : kind(kind), subtypes(std::move(subtypes)) {}
 
@@ -55,10 +54,10 @@ public:
         return Type(Kind::BASE, {BaseType::INT});
     }
 
-private:
     Kind kind;
     std::vector<BaseType> subtypes; // TODO: make this work for function pointers etc?
 
+private:
     std::string base_type_to_string(BaseType type) const {
         switch (type) {
         case BaseType::INT:
@@ -69,4 +68,14 @@ private:
     }
 };
 
-using Location = std::optional<std::string>;
+struct Location {
+    Location() : loc(std::nullopt) {}
+    Location(std::string str) : loc(str) {}
+
+    std::string to_string() const {
+        return loc.value_or("stack");
+    }
+
+private:
+    std::optional<std::string> loc;
+};

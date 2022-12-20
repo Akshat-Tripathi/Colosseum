@@ -69,7 +69,7 @@ struct FunctionDef: public Stmt {
     FunctionDef(Type return_type,
                  std::string name,
                  std::vector<std::unique_ptr<Variable>>& args,
-                 std::optional<std::string> arena,
+                 Location arena,
                  std::unique_ptr<MultiStmt>& body) :
                  return_type(return_type), name(name),
                  args(std::move(args)), arena(arena), body(std::move(body)) {}
@@ -81,6 +81,6 @@ struct FunctionDef: public Stmt {
     Type return_type;
     std::string name;
     std::vector<std::unique_ptr<Variable>> args;
-    std::optional<std::string> arena;
+    Location arena;
     std::unique_ptr<MultiStmt> body;
 };
