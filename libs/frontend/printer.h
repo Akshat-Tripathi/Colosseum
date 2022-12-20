@@ -12,11 +12,11 @@ public:
 
     void visit(const ReturnStmt* node);
 
-    //TODO do this one properly
     void visit(const FunctionDef* node);
 
+    void visit(const Variable* node);
+
     void visit(const SetStmt* node) {}
-    void visit(const Variable* node) {}
 
 private:
     void print_indents() {
