@@ -1,0 +1,3 @@
+(defun int pain () (
+    (return 0)
+))
