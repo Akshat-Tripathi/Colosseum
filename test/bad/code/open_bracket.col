@@ -1,0 +1,3 @@
+(defun int main () (
+    (return 0)
+)
