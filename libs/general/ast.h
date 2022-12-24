@@ -2,8 +2,8 @@
 #include <memory>
 #include <vector>
 #include <optional>
-#include "idents.h"
-#include "visitor.h"
+#include <general/idents.h>
+#include <general/visitor.h>
 
 struct Expr {
     virtual void accept(Visitor& visitor) = 0;

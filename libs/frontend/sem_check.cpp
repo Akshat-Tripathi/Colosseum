@@ -1,5 +1,5 @@
 #include <exception>
-#include "sem_check.h"
+#include <frontend/sem_check.h>
 
 void SemCheck::check(const MultiStmt* node) {
     visit(node);

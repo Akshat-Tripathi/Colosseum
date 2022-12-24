@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include <frontend/lexer.h>
 #include <type_traits>
 #include <sstream>
 

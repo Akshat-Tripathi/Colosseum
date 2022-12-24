@@ -1,8 +1,8 @@
 #pragma once
 #include <stack>
-#include "expr.h"
-#include "idents.h"
-#include "visitor.h"
+#include <general/ast.h>
+#include <general/idents.h>
+#include <general/visitor.h>
 
 class SemCheck : public Visitor {
 public:

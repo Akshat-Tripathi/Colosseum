@@ -1,7 +1,7 @@
 #pragma once
 #include <ostream>
-#include "expr.h"
-#include "visitor.h"
+#include <general/ast.h>
+#include <general/visitor.h>
 
 class ASTPrinter : public Visitor {
 public:

@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "expr.h"
+#include <general/ast.h>
 
 //Forward declare everything
 class Variable;

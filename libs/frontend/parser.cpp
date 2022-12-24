@@ -1,6 +1,6 @@
 #include <stdexcept>
-#include "parser.h"
-#include "idents.h"
+#include <frontend/parser.h>
+#include <general/idents.h>
 
 Type parse_type(const Atom& atom);
 std::unique_ptr<Stmt> parse_statement(const List& list);

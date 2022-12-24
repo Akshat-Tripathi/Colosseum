@@ -1,4 +1,4 @@
-#include "printer.h"
+#include <general/printer.h>
 
 void ASTPrinter::visit(const ConstExpr* node) {
         stream << "(ConstExpr " << node->token << ')';
