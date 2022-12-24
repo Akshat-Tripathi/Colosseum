@@ -46,6 +46,7 @@ std::unique_ptr<Expr> parse_expression(const EitherAtomOrList& either) {
     return parse_constexpr(*atom);
 }
 
+// TODO add type inference for these
 std::unique_ptr<ConstExpr> parse_constexpr(const Atom& atom) {
     return std::make_unique<ConstExpr>(atom.to_string());
 }
