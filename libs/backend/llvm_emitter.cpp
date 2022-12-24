@@ -26,8 +26,7 @@ void LLVMEmitter::emit(const MultiStmt* node) {
 
 void LLVMEmitter::visit(const ConstExpr* node) {
     if (node->type == Type::Int()) {
-        // TODO use different values than 0
-        push(llvm::ConstantInt::get(ctx, llvm::APInt(32, 0, true))); //Default ints are int32_ts
+        push(llvm::ConstantInt::get(ctx, llvm::APInt(32, std::get<int>(node->val), true))); //Default ints are int32_ts
     } else {
         throw std::runtime_error("Unreachable");
     }

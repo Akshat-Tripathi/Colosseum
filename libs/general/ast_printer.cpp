@@ -1,8 +1,14 @@
 #include <general/printer.h>
 
 void ASTPrinter::visit(const ConstExpr* node) {
-        stream << "(ConstExpr " << node->type.to_string() << ' ' << node->token << ')';
+    std::string val_str;
+
+    if (node->type == Type::Int()) {
+        val_str = std::to_string(std::get<int>(node->val));
     }
+
+    stream << "(ConstExpr " << node->type.to_string() << ' ' << val_str << ')';
+}
 
 void ASTPrinter::visit(const MultiStmt* node) {
     stream << "(MultiStmt";

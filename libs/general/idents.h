@@ -3,6 +3,7 @@
 #include <optional>
 #include <initializer_list>
 #include <sstream>
+#include <variant>
 
 // Might not actually be a HKT idk
 enum class Kind {
@@ -14,6 +15,8 @@ enum class Kind {
 enum class BaseType {
     INT
 };
+
+using BaseTypes = std::variant<int>;
 
 struct Type {
     Type(Kind kind, std::vector<BaseType> subtypes) : kind(kind), subtypes(std::move(subtypes)) {}
