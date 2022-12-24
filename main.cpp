@@ -4,6 +4,7 @@
 #include <frontend/parser.h>
 #include <frontend/sem_check.h>
 #include <general/printer.h>
+#include <backend/llvm_emitter.h>
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -25,6 +26,10 @@ int main(int argc, char** argv) {
     SemCheck checker;
 
     checker.check(parsed.get());
+
+    LLVMEmitter emitter(std::cout);
+
+    emitter.emit(parsed.get());
 
     file.close();
     return 0;

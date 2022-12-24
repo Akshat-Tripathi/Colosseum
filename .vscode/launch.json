@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/colosseum",
             "args": ["test/good/code/return_0.col"],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",

@@ -19,7 +19,7 @@ struct Type {
     Type(Kind kind, std::vector<BaseType> subtypes) : kind(kind), subtypes(std::move(subtypes)) {}
     Type(Kind kind, std::initializer_list<BaseType> subtypes) : kind(kind), subtypes(std::move(subtypes)) {}
 
-    inline bool operator==(const Type& rhs) { 
+    inline bool operator==(const Type& rhs) const { 
         return this->kind == rhs.kind && this->subtypes == rhs.subtypes;   
     }
 
