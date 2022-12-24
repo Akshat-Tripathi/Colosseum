@@ -10,6 +10,6 @@ public:
 
     virtual void emit(const MultiStmt* node) = 0;
 
-private:
+protected:
     std::ostream& stream;
 };

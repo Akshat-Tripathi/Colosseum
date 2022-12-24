@@ -7,15 +7,18 @@
 #include <backend/llvm_emitter.h>
 
 int main(int argc, char** argv) {
-    if (argc != 2) {
-        std::cout << "Please enter the filename" << std::endl;
+    if (argc != 3) {
+        std::cout << "Please enter the input and output filenames" << std::endl;
         return 1;
     }
 
-    std::ifstream file;
-    file.open(argv[1]);
+    std::ifstream input;
+    input.open(argv[1]);
+    
+    std::ofstream output;
+    output.open(argv[2]);
 
-    const auto lexed = lex(file);
+    const auto lexed = lex(input);
     print(lexed);
 
     auto parsed = parse(*lexed);
@@ -27,10 +30,11 @@ int main(int argc, char** argv) {
 
     checker.check(parsed.get());
 
-    LLVMEmitter emitter(std::cout);
+    LLVMEmitter emitter(output);
 
     emitter.emit(parsed.get());
 
-    file.close();
+    input.close();
+    output.close();
     return 0;
 }

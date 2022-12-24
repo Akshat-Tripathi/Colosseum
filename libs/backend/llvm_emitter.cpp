@@ -16,7 +16,11 @@ void LLVMEmitter::emit(const MultiStmt* node) {
     visit(node);
 
     if (!llvm::verifyModule(mod, &llvm::errs())) {
-        mod.print(llvm::errs(), nullptr);
+        std::string str;
+        llvm::raw_string_ostream sstream(str);
+        mod.print(sstream, nullptr);
+
+        stream << str;
     }
 }
 
