@@ -35,13 +35,14 @@ struct MultiStmt: public Stmt {
 };
 
 struct ConstExpr: public Expr {
-    ConstExpr(std::string token): token(token) {}
+    ConstExpr(std::string token, Type type): token(token), type(type) {}
 
     void accept(Visitor& visitor) override {
         visitor.visit(this);
     }
 
     std::string token;
+    Type type;
 };
 
 struct SetStmt: public Stmt {

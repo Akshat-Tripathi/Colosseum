@@ -1,7 +1,7 @@
 #include <general/printer.h>
 
 void ASTPrinter::visit(const ConstExpr* node) {
-        stream << "(ConstExpr " << node->token << ')';
+        stream << "(ConstExpr " << node->type.to_string() << ' ' << node->token << ')';
     }
 
 void ASTPrinter::visit(const MultiStmt* node) {
